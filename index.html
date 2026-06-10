@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivan Ibarra — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+/* ── THEMES ── */
+:root,[data-theme="dark"]{
+  --bg:        #0f0d0a;
+  --bg2:       #161310;
+  --bg3:       #1e1810;
+  --text:      #f0e8de;
+  --text-2:    rgba(240,232,222,0.80);
+  --text-3:    rgba(240,232,222,0.55);
+  --text-4:    rgba(240,232,222,0.30);
+  --orange:    #ff5a0a;
+  --orange-d:  #cc4608;
+  --orange-b:  rgba(255,90,10,0.22);
+  --orange-s:  rgba(255,90,10,0.08);
+  --border:    0.5px solid rgba(255,90,10,0.13);
+  --border-n:  0.5px solid rgba(240,232,222,0.12);
+  --geo-alpha: 1;
+}
+[data-theme="light"]{
+  --bg:        #f8f4ef;
+  --bg2:       #f0ebe3;
+  --bg3:       #e8e1d8;
+  --text:      #111111;
+  --text-2:    rgba(17,17,17,0.80);
+  --text-3:    rgba(17,17,17,0.55);
+  --text-4:    rgba(17,17,17,0.32);
+  --orange:    #d94e00;
+  --orange-d:  #b03f00;
+  --orange-b:  rgba(217,78,0,0.20);
+  --orange-s:  rgba(217,78,0,0.07);
+  --border:    0.5px solid rgba(217,78,0,0.18);
+  --border-n:  0.5px solid rgba(17,17,17,0.12);
+  --geo-alpha: 0.55;
+}
+
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+  transition:background .35s,color .35s;
+}
+
+/* ── CURSOR ── */
+#cur{
+  position:fixed;width:7px;height:7px;
+  background:var(--orange);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .12s,height .12s;
+}
+#curl{
+  position:fixed;width:28px;height:28px;
+  border:1px solid var(--orange-b);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,border-color .2s;
+}
+body:has(a:hover) #cur,body:has(button:hover) #cur{width:4px;height:4px;}
+body:has(a:hover) #curl,body:has(button:hover) #curl{width:44px;height:44px;border-color:var(--orange);}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;
+  height:44px;padding:0 16px 0 0;
+  background:rgba(15,13,10,0.88);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:var(--border);
+  transition:background .35s,border-color .3s;
+}
+[data-theme="light"] nav{background:rgba(248,244,239,0.92);}
+nav.scrolled{border-bottom-color:var(--orange-b);}
+
+.nav-left{display:flex;align-items:stretch;height:100%;}
+.nav-accent{width:5px;background:var(--orange);flex-shrink:0;transition:background .35s;}
+.nav-logo{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:4px;
+  color:var(--orange);text-decoration:none;
+  padding:0 20px;display:flex;align-items:center;
+  border-right:var(--border-n);text-transform:uppercase;
+  transition:color .35s;
+}
+.nav-tagline{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;
+  color:var(--text-4);text-transform:uppercase;
+  padding:0 16px;display:flex;align-items:center;
+}
+
+.nav-links{display:flex;gap:0;list-style:none;margin-left:auto;}
+.nav-links a{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text-3);text-decoration:none;
+  padding:0 14px;height:44px;display:flex;align-items:center;
+  border-left:var(--border-n);
+  transition:color .18s,background .18s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;left:14px;right:14px;
+  height:1.5px;background:var(--orange);
+  transform:scaleX(0);transition:transform .25s cubic-bezier(.77,0,.18,1);
+}
+.nav-links a:hover{color:var(--orange);}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
+.nav-links a.active{color:var(--orange);}
+
+/* theme + lang toggles */
+.nav-controls{
+  display:flex;align-items:stretch;height:100%;
+  border-left:var(--border-n);
+  margin-left:4px;
+}
+.nav-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text-3);
+  background:transparent;border:none;
+  padding:0 14px;height:44px;display:flex;align-items:center;
+  cursor:none;transition:color .18s;
+  border-left:var(--border-n);
+  white-space:nowrap;
+}
+.nav-btn:hover{color:var(--orange);}
+.nav-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── HERO ── */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  text-align:center;
+  padding:44px 44px 0;
+  overflow:hidden;
+}
+#geo-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+
+.hc{position:absolute;width:18px;height:18px;z-index:3;}
+.hc::before,.hc::after{content:'';position:absolute;background:rgba(255,90,10,0.35);}
+[data-theme="light"] .hc::before,[data-theme="light"] .hc::after{background:rgba(217,78,0,0.4);}
+.hc.tl{top:60px;left:32px;}.hc.tl::before{top:0;left:0;width:1px;height:100%;}.hc.tl::after{top:0;left:0;width:100%;height:1px;}
+.hc.tr{top:60px;right:32px;}.hc.tr::before{top:0;right:0;width:1px;height:100%;}.hc.tr::after{top:0;right:0;width:100%;height:1px;}
+.hc.bl{bottom:60px;left:32px;}.hc.bl::before{bottom:0;left:0;width:1px;height:100%;}.hc.bl::after{bottom:0;left:0;width:100%;height:1px;}
+.hc.br{bottom:60px;right:32px;}.hc.br::before{bottom:0;right:0;width:1px;height:100%;}.hc.br::after{bottom:0;right:0;width:100%;height:1px;}
+
+.hero-content{
+  position:relative;z-index:5;
+  display:flex;flex-direction:column;align-items:center;
+}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--orange);
+  opacity:.65;
+  margin-bottom:16px;
+  animation:rise .5s ease .3s both;
+}
+.hero-name{line-height:.85;margin-bottom:0;}
+.name-first{
+  display:block;
+  font-size:clamp(88px,14vw,160px);
+  font-weight:700;color:var(--text);
+  letter-spacing:12px;text-transform:uppercase;
+  clip-path:inset(0 100% 0 0);
+  animation:wipe .65s cubic-bezier(.77,0,.18,1) .45s forwards;
+  transition:color .35s;
+}
+.name-last{
+  display:block;
+  font-size:clamp(88px,14vw,160px);
+  font-weight:700;color:transparent;
+  -webkit-text-stroke:2px var(--orange);
+  letter-spacing:12px;text-transform:uppercase;
+  clip-path:inset(0 100% 0 0);
+  animation:wipe .65s cubic-bezier(.77,0,.18,1) .6s forwards;
+  transition:-webkit-text-stroke-color .35s;
+}
+.hero-divider{
+  width:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--orange),rgba(255,90,10,.3),transparent);
+  margin:22px auto;
+  animation:line-grow .6s cubic-bezier(.77,0,.18,1) .9s forwards;
+}
+.hero-role{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--text-2);
+  animation:rise .4s ease 1s both;
+}
+.hero-role span{color:var(--orange);opacity:.7;}
+.hero-sub{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text-3);
+  margin-top:6px;
+  animation:rise .4s ease 1.1s both;
+}
+.hero-cta{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin-top:30px;
+  animation:rise .4s ease 1.2s both;
+}
+.btn-p{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;padding:11px 26px;
+  background:var(--orange);color:var(--bg);
+  border:none;text-decoration:none;display:inline-block;
+  cursor:none;font-weight:600;
+  transition:background .2s,color .35s;
+}
+.btn-p:hover{background:var(--orange-d);}
+.btn-g{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;padding:10px 26px;
+  background:transparent;color:var(--text-3);
+  border:var(--border-n);text-decoration:none;display:inline-block;
+  cursor:none;
+  transition:border-color .2s,color .2s;
+}
+.btn-g:hover{border-color:var(--orange-b);color:var(--orange);}
+
+.hero-stats{
+  display:flex;gap:0;
+  margin-top:50px;
+  border-top:var(--border);
+  width:100%;max-width:560px;
+  animation:rise .4s ease 1.35s both;
+}
+.hstat{flex:1;padding:14px 10px;text-align:center;border-right:var(--border);}
+.hstat:last-child{border-right:none;}
+.hstat-n{font-size:26px;font-weight:700;color:var(--orange);letter-spacing:2px;line-height:1;}
+.hstat-l{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--text-4);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+
+.scroll-hint{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;
+  color:var(--text-4);text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:rise 1s ease 2s both;z-index:5;
+}
+.scroll-hint::after{
+  content:'';width:1px;height:20px;background:var(--orange-b);
+  animation:pulse-v 2s ease-in-out infinite;
+}
+@keyframes pulse-v{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ── LAYOUT ── */
+.page-wrap{display:grid;grid-template-columns:28px 1fr 28px;}
+.col-side{border-right:var(--border);display:flex;flex-direction:column;align-items:center;padding-top:60px;}
+.col-side.right{border-right:none;border-left:var(--border);}
+.col-text{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--text-4);letter-spacing:2px;text-transform:uppercase;writing-mode:vertical-rl;margin-top:12px;}
+
+/* ── SECTION ── */
+.section{padding:72px 52px;border-bottom:var(--border);}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:40px;}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);opacity:.5;letter-spacing:2px;min-width:20px;}
+.sec-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--text-3);letter-spacing:3px;text-transform:uppercase;}
+.sec-line{flex:1;height:.5px;background:var(--orange-b);}
+.sec-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--text-4);letter-spacing:2px;}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 200px;gap:48px;align-items:start;}
+.about-text{font-size:15px;color:var(--text-2);line-height:1.95;}
+.about-text strong{color:var(--text);font-weight:600;}
+.about-text em{color:var(--orange);font-style:normal;}
+.about-text+.about-text{margin-top:18px;}
+.about-panel{border:var(--border);}
+.panel-row{display:flex;flex-direction:column;padding:11px 14px;border-bottom:var(--border);}
+.panel-row:last-child{border-bottom:none;}
+.panel-key{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--orange);opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.panel-val{font-size:12px;color:var(--text-2);}
+
+/* ── SKILLS ── */
+.skills-wrap{display:flex;flex-direction:column;gap:22px;}
+.sg-label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;border-left:2px solid var(--orange);padding-left:8px;margin-bottom:10px;}
+.sg-label.dim{color:var(--text-3);border-color:var(--border-n);}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:5px;}
+.skill{padding:9px 12px;border:var(--border-n);font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);letter-spacing:.05em;transition:all .18s;position:relative;overflow:hidden;}
+.skill::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--orange);opacity:0;transition:opacity .18s;}
+.skill:hover{color:var(--text);border-color:var(--orange-b);background:var(--orange-s);}
+.skill:hover::before{opacity:1;}
+.skill.core{color:var(--text-2);border-color:var(--orange-b);}
+.skill.core::before{opacity:.4;}
+.skill.learning{color:var(--text-4);}
+
+/* ── PROJECTS ── */
+.proj-list{display:flex;flex-direction:column;gap:6px;}
+.proj{display:grid;grid-template-columns:32px 1fr auto auto;align-items:center;gap:20px;padding:20px 18px;border:var(--border-n);text-decoration:none;color:inherit;cursor:none;transition:background .2s,border-color .2s;position:relative;overflow:hidden;}
+.proj::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--orange);transform:scaleY(0);transition:transform .25s cubic-bezier(.77,0,.18,1);}
+.proj:hover{background:var(--orange-s);border-color:var(--orange-b);}
+.proj:hover::before{transform:scaleY(1);}
+.proj:hover .parr{color:var(--orange);transform:translate(3px,-3px);}
+.pidx{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);opacity:.4;}
+.pname{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.pdesc{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-3);}
+.ptags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.ptag{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:2px 8px;border:.5px solid var(--orange-b);color:var(--orange);opacity:.7;letter-spacing:1px;text-transform:uppercase;}
+.parr{font-size:18px;color:var(--text-4);transition:color .2s,transform .2s;line-height:1;}
+
+/* ── EXP ── */
+.exp-list{display:flex;flex-direction:column;}
+.exp-item{display:grid;grid-template-columns:148px 1fr;gap:36px;padding:28px 0;border-bottom:var(--border-n);}
+.exp-item:first-child{border-top:var(--border-n);}
+.exp-period{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);opacity:.45;letter-spacing:2px;padding-top:2px;line-height:1.9;}
+.exp-role{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.exp-company{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:10px;}
+.exp-desc{font-size:13px;color:var(--text-2);line-height:1.85;}
+
+/* ── CONTACT ── */
+.contact-intro{font-size:15px;color:var(--text-2);line-height:1.85;max-width:520px;margin-bottom:36px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ccard{display:flex;align-items:center;gap:14px;padding:17px 18px;border:var(--border-n);text-decoration:none;color:inherit;cursor:none;transition:background .2s,border-color .2s;position:relative;overflow:hidden;}
+.ccard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--orange);opacity:0;transition:opacity .2s;}
+.ccard:hover{background:var(--orange-s);border-color:var(--orange-b);}
+.ccard:hover::before{opacity:1;}
+.ccard:hover .cicon{color:var(--orange);border-color:var(--orange-b);}
+.cicon{width:34px;height:34px;border:var(--border-n);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--orange);opacity:.5;transition:color .2s,border-color .2s,opacity .2s;}
+.clabel{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--orange);opacity:.5;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.cval{font-size:12px;color:var(--text-2);}
+
+/* ── FOOTER ── */
+footer{padding:16px 52px;display:flex;justify-content:space-between;align-items:center;border-top:var(--border);}
+.fl{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--text-4);letter-spacing:2px;text-transform:uppercase;}
+.fc{font-size:20px;font-weight:700;color:var(--orange);opacity:.08;letter-spacing:6px;}
+.fr{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--orange);opacity:.18;letter-spacing:2px;}
+
+/* ── ANIMATIONS ── */
+@keyframes wipe{to{clip-path:inset(0 0% 0 0);}}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes line-grow{to{width:180px;}}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:.08s;}
+.reveal-d2{transition-delay:.16s;}
+.reveal-d3{transition-delay:.24s;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  #cur,#curl{display:none;}body{cursor:auto;}
+  .nav-tagline{display:none;}
+  .nav-links a{padding:0 10px;font-size:8px;}
+  .nav-btn{padding:0 10px;}
+  #hero{padding:44px 20px 0;}
+  .hc.tr,.hc.br{right:20px;}.hc.tl,.hc.bl{left:20px;}
+  .name-first,.name-last{font-size:clamp(64px,18vw,100px);letter-spacing:6px;}
+  .hero-stats{max-width:100%;}
+  .page-wrap{grid-template-columns:1fr;}.col-side{display:none;}
+  .section{padding:52px 20px;}
+  .about-grid{grid-template-columns:1fr;gap:28px;}
+  .exp-item{grid-template-columns:1fr;gap:6px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .proj{grid-template-columns:28px 1fr;}.ptags,.parr{display:none;}
+  footer{padding:14px 20px;}.fc{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curl"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-left">
+    <div class="nav-accent"></div>
+    <a href="#hero" class="nav-logo">II · Portfolio</a>
+    <span class="nav-tagline" data-i18n="nav-tagline">Full Stack Developer</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about"   data-i18n="nav-about">Sobre mí</a></li>
+    <li><a href="#skills"  data-i18n="nav-skills">Stack</a></li>
+    <li><a href="#work"    data-i18n="nav-work">Proyectos</a></li>
+    <li><a href="#exp"     data-i18n="nav-exp">Exp.</a></li>
+    <li><a href="#contact" data-i18n="nav-contact">Contacto</a></li>
+  </ul>
+  <div class="nav-controls">
+    <button class="nav-btn" id="langBtn" title="Switch language">ES | EN</button>
+    <button class="nav-btn" id="themeBtn" title="Toggle theme">
+      <!-- sun icon (shown in dark mode) -->
+      <svg id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <!-- moon icon (shown in light mode) -->
+      <svg id="icon-moon" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="geo-canvas"></canvas>
+  <div class="hc tl"></div><div class="hc tr"></div>
+  <div class="hc bl"></div><div class="hc br"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow" data-i18n="hero-eyebrow">Creador · Full Stack Developer · IA en progreso</div>
+    <div class="hero-name">
+      <span class="name-first">IVAN</span>
+      <span class="name-last">IBARRA</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-role">Python <span>·</span> Django <span>·</span> Next.js <span>·</span> PostgreSQL</div>
+    <div class="hero-sub" data-i18n="hero-sub">Parque Chas · Buenos Aires · Argentina</div>
+    <div class="hero-cta">
+      <a href="#work" class="btn-p" data-i18n="hero-cta-1">Ver proyectos →</a>
+      <a href="#contact" class="btn-g" data-i18n="hero-cta-2">Contactar</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">3+</div><div class="hstat-l" data-i18n="stat-1">Años exp.</div></div>
+      <div class="hstat"><div class="hstat-n">TL</div><div class="hstat-l" data-i18n="stat-2">Tech Lead</div></div>
+      <div class="hstat"><div class="hstat-n">GOV</div><div class="hstat-l" data-i18n="stat-3">Estado Nac.</div></div>
+      <div class="hstat"><div class="hstat-n">IA</div><div class="hstat-l" data-i18n="stat-4">En estudio</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint" data-i18n="scroll">scroll</div>
+</section>
+
+<!-- COLUMNS + MAIN -->
+<div class="page-wrap">
+<div class="col-side"><span class="col-text">IVAN IBARRA · PORTFOLIO · 2025</span></div>
+<main>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <span class="sec-title" data-i18n="nav-about">Sobre mí</span>
+    <div class="sec-line"></div>
+    <span class="sec-tag">ABOUT</span>
+  </div>
+  <div class="about-grid reveal">
+    <div>
+      <p class="about-text" data-i18n="about-p1">Soy <strong>Ivan Ibarra</strong>, desarrollador Full Stack y <em>creador</em> multidisciplinario con base en Parque Chas, Buenos Aires. Me especializo en <strong>Python y Django</strong>, construyendo sistemas institucionales de escala para organismos del gobierno nacional argentino.</p>
+      <p class="about-text" data-i18n="about-p2">Actualmente lidero como <strong>Tech Lead</strong> el sistema SIAL&nbsp;/&nbsp;BDU — workflows complejos de aprobación multi-rol, migraciones, integraciones API y mentoría de equipo. Paralelamente estudio <em>Inteligencia Artificial</em> para llevar mi stack al siguiente nivel.</p>
+      <p class="about-text" data-i18n="about-p3">Detallista por naturaleza. Fanático del <strong>anime, los videojuegos de los 90</strong> y de todo lo que cruza tecnología con cultura visual. Creo que el mejor código también tiene estética.</p>
+    </div>
+    <div class="about-panel">
+      <div class="panel-row"><span class="panel-key" data-i18n="p-location">Ubicación</span><span class="panel-val">Parque Chas, CABA</span></div>
+      <div class="panel-row"><span class="panel-key" data-i18n="p-role">Rol actual</span><span class="panel-val" data-i18n="p-role-val">Tech Lead / Full Stack</span></div>
+      <div class="panel-row"><span class="panel-key">Backend</span><span class="panel-val">Python · Django · DRF</span></div>
+      <div class="panel-row"><span class="panel-key">Frontend</span><span class="panel-val">Next.js · JS · CSS</span></div>
+      <div class="panel-row"><span class="panel-key" data-i18n="p-db">Base de datos</span><span class="panel-val">PostgreSQL</span></div>
+      <div class="panel-row"><span class="panel-key" data-i18n="p-studying">Estudiando</span><span class="panel-val" data-i18n="p-studying-val">Inteligencia Artificial</span></div>
+      <div class="panel-row"><span class="panel-key" data-i18n="p-method">Metodología</span><span class="panel-val">Scrum / Agile</span></div>
+      <div class="panel-row"><span class="panel-key">Freelance</span><span class="panel-val" style="color:var(--orange)" data-i18n="p-freelance">Disponible ✓</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <span class="sec-title" data-i18n="nav-skills">Stack técnico</span>
+    <div class="sec-line"></div>
+    <span class="sec-tag">SKILLS</span>
+  </div>
+  <div class="skills-wrap reveal">
+    <div>
+      <div class="sg-label" data-i18n="sk-backend">Backend &amp; bases de datos</div>
+      <div class="skills-grid">
+        <div class="skill core">Python</div><div class="skill core">Django</div>
+        <div class="skill core">Django REST</div><div class="skill core">PostgreSQL</div>
+        <div class="skill">Celery</div><div class="skill">Redis</div>
+        <div class="skill">REST APIs</div><div class="skill">WhatsApp API</div>
+      </div>
+    </div>
+    <div>
+      <div class="sg-label" data-i18n="sk-frontend">Frontend &amp; DevOps</div>
+      <div class="skills-grid">
+        <div class="skill">Next.js</div><div class="skill">JavaScript</div>
+        <div class="skill">Node.js</div><div class="skill">HTML / CSS</div>
+        <div class="skill">Git</div><div class="skill">Linux</div>
+        <div class="skill">Docker</div><div class="skill">Nginx</div>
+      </div>
+    </div>
+    <div>
+      <div class="sg-label dim" data-i18n="sk-learning">En aprendizaje activo</div>
+      <div class="skills-grid">
+        <div class="skill learning" data-i18n="sk-ai">Inteligencia Artificial</div>
+        <div class="skill learning" data-i18n="sk-ml">Machine Learning</div>
+        <div class="skill learning" data-i18n="sk-arch">Arquitectura de software</div>
+        <div class="skill learning" data-i18n="sk-lead">Liderazgo técnico</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work" class="section">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <span class="sec-title" data-i18n="nav-work">Proyectos</span>
+    <div class="sec-line"></div>
+    <span class="sec-tag">WORK</span>
+  </div>
+  <div class="proj-list">
+    <a href="#" class="proj reveal">
+      <span class="pidx">_01</span>
+      <div>
+        <div class="pname" data-i18n="proj1-name">SIAL / BDU — Inventario institucional</div>
+        <div class="pdesc" data-i18n="proj1-desc">Sistema de activos para organismos del Estado Nacional argentino</div>
+      </div>
+      <div class="ptags"><span class="ptag">Django</span><span class="ptag">PostgreSQL</span><span class="ptag">DRF</span></div>
+      <span class="parr">&nearr;</span>
+    </a>
+    <a href="#" class="proj reveal reveal-d1">
+      <span class="pidx">_02</span>
+      <div>
+        <div class="pname" data-i18n="proj2-name">Barbería Íntima — Landing comercial</div>
+        <div class="pdesc" data-i18n="proj2-desc">Sitio web con identidad visual para barbería boutique porteña</div>
+      </div>
+      <div class="ptags"><span class="ptag">HTML</span><span class="ptag">CSS</span><span class="ptag">JS</span></div>
+      <span class="parr">&nearr;</span>
+    </a>
+    <a href="#" class="proj reveal reveal-d2">
+      <span class="pidx">_03</span>
+      <div>
+        <div class="pname" data-i18n="proj3-name">Pegasos — Gestión de club deportivo</div>
+        <div class="pdesc" data-i18n="proj3-desc">Plataforma para organización de básquet y vóley comunitarios</div>
+      </div>
+      <div class="ptags"><span class="ptag">Next.js</span><span class="ptag">Node</span><span class="ptag">PostgreSQL</span></div>
+      <span class="parr">&nearr;</span>
+    </a>
+  </div>
+</section>
+
+<!-- EXP -->
+<section id="exp" class="section">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <span class="sec-title" data-i18n="nav-exp">Experiencia</span>
+    <div class="sec-line"></div>
+    <span class="sec-tag">EXP.</span>
+  </div>
+  <div class="exp-list reveal">
+    <div class="exp-item">
+      <div class="exp-period" data-i18n="exp1-period">2022 — PRESENTE</div>
+      <div>
+        <div class="exp-role" data-i18n="exp1-role">Tech Lead · Full Stack Developer</div>
+        <div class="exp-company" data-i18n="exp1-company">Sistema SIAL / BDU — Organismo Nacional</div>
+        <p class="exp-desc" data-i18n="exp1-desc">Liderazgo técnico del sistema de inventario y gestión de activos institucionales. Diseño de workflows de aprobación multi-rol, migraciones de datos complejas, integraciones API y mentoría del equipo.</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">2021 — 2022</div>
+      <div>
+        <div class="exp-role" data-i18n="exp2-role">Full Stack Developer</div>
+        <div class="exp-company" data-i18n="exp2-company">Sistema SIAL — Organismo Nacional</div>
+        <p class="exp-desc" data-i18n="exp2-desc">Desarrollo de módulos de inventario, reportes de amortización y herramientas de administración con Django, DRF y PostgreSQL.</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">2013 — 2021</div>
+      <div>
+        <div class="exp-role" data-i18n="exp3-role">Sistemas y Soporte IT</div>
+        <div class="exp-company">Hospital Italiano de Buenos Aires</div>
+        <p class="exp-desc" data-i18n="exp3-desc">Soporte de infraestructura y resolución de incidentes en entorno de alta disponibilidad. Base que forjó el ojo para los sistemas robustos y el detalle técnico.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <span class="sec-title" data-i18n="nav-contact">Contacto</span>
+    <div class="sec-line"></div>
+    <span class="sec-tag">CONTACT</span>
+  </div>
+  <p class="contact-intro reveal" data-i18n="contact-intro">¿Tenés un proyecto en mente o querés hablar de trabajo? Estoy disponible para freelance y abierto a propuestas interesantes.</p>
+  <div class="contact-grid reveal">
+    <a href="mailto:tu@email.com" class="ccard">
+      <div class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></div>
+      <div><div class="clabel">Email</div><div class="cval">tu@email.com</div></div>
+    </a>
+    <a href="https://linkedin.com/in/tu-perfil" target="_blank" class="ccard">
+      <div class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M12 10v7m0-5a3 3 0 0 1 6 0v5"/></svg></div>
+      <div><div class="clabel">LinkedIn</div><div class="cval">/in/tu-perfil</div></div>
+    </a>
+    <a href="https://github.com/tu-usuario" target="_blank" class="ccard">
+      <div class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></div>
+      <div><div class="clabel">GitHub</div><div class="cval">/tu-usuario</div></div>
+    </a>
+    <a href="mailto:tu@email.com?subject=Proyecto%20freelance" class="ccard">
+      <div class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div><div class="clabel">Freelance</div><div class="cval" data-i18n="contact-freelance">Disponible para proyectos →</div></div>
+    </a>
+  </div>
+</section>
+
+</main>
+<div class="col-side right"><span class="col-text" data-i18n="side-right">CREADOR · MULTIDISCIPLINARIO · IA</span></div>
+</div>
+
+<footer>
+  <span class="fl">Parque Chas · Buenos Aires · AR</span>
+  <span class="fc">IBARRA</span>
+  <span class="fr">SYS_OK · 2025</span>
+</footer>
+
+<script>
+(function(){
+
+/* ── i18n ── */
+var strings = {
+  es: {
+    "nav-tagline":    "Full Stack Developer",
+    "nav-about":      "Sobre mí",
+    "nav-skills":     "Stack",
+    "nav-work":       "Proyectos",
+    "nav-exp":        "Exp.",
+    "nav-contact":    "Contacto",
+    "hero-eyebrow":   "Creador · Full Stack Developer · IA en progreso",
+    "hero-sub":       "Parque Chas · Buenos Aires · Argentina",
+    "hero-cta-1":     "Ver proyectos →",
+    "hero-cta-2":     "Contactar",
+    "stat-1":         "Años exp.",
+    "stat-2":         "Tech Lead",
+    "stat-3":         "Estado Nac.",
+    "stat-4":         "En estudio",
+    "scroll":         "scroll",
+    "about-p1":       'Soy <strong>Ivan Ibarra</strong>, desarrollador Full Stack y <em>creador</em> multidisciplinario con base en Parque Chas, Buenos Aires. Me especializo en <strong>Python y Django</strong>, construyendo sistemas institucionales de escala para organismos del gobierno nacional argentino.',
+    "about-p2":       'Actualmente lidero como <strong>Tech Lead</strong> el sistema SIAL&nbsp;/&nbsp;BDU — workflows complejos de aprobación multi-rol, migraciones, integraciones API y mentoría de equipo. Paralelamente estudio <em>Inteligencia Artificial</em> para llevar mi stack al siguiente nivel.',
+    "about-p3":       'Detallista por naturaleza. Fanático del <strong>anime, los videojuegos de los 90</strong> y de todo lo que cruza tecnología con cultura visual. Creo que el mejor código también tiene estética.',
+    "p-location":     "Ubicación",
+    "p-role":         "Rol actual",
+    "p-role-val":     "Tech Lead / Full Stack",
+    "p-db":           "Base de datos",
+    "p-studying":     "Estudiando",
+    "p-studying-val": "Inteligencia Artificial",
+    "p-method":       "Metodología",
+    "p-freelance":    "Disponible ✓",
+    "sk-backend":     "Backend & bases de datos",
+    "sk-frontend":    "Frontend & DevOps",
+    "sk-learning":    "En aprendizaje activo",
+    "sk-ai":          "Inteligencia Artificial",
+    "sk-ml":          "Machine Learning",
+    "sk-arch":        "Arquitectura de software",
+    "sk-lead":        "Liderazgo técnico",
+    "proj1-name":     "SIAL / BDU — Inventario institucional",
+    "proj1-desc":     "Sistema de activos para organismos del Estado Nacional argentino",
+    "proj2-name":     "Barbería Íntima — Landing comercial",
+    "proj2-desc":     "Sitio web con identidad visual para barbería boutique porteña",
+    "proj3-name":     "Pegasos — Gestión de club deportivo",
+    "proj3-desc":     "Plataforma para organización de básquet y vóley comunitarios",
+    "exp1-period":    "2022 — PRESENTE",
+    "exp1-role":      "Tech Lead · Full Stack Developer",
+    "exp1-company":   "Sistema SIAL / BDU — Organismo Nacional",
+    "exp1-desc":      "Liderazgo técnico del sistema de inventario y gestión de activos institucionales. Diseño de workflows de aprobación multi-rol, migraciones de datos complejas, integraciones API y mentoría del equipo.",
+    "exp2-role":      "Full Stack Developer",
+    "exp2-company":   "Sistema SIAL — Organismo Nacional",
+    "exp2-desc":      "Desarrollo de módulos de inventario, reportes de amortización y herramientas de administración con Django, DRF y PostgreSQL.",
+    "exp3-role":      "Sistemas y Soporte IT",
+    "exp3-desc":      "Soporte de infraestructura y resolución de incidentes en entorno de alta disponibilidad. Base que forjó el ojo para los sistemas robustos y el detalle técnico.",
+    "contact-intro":  "¿Tenés un proyecto en mente o querés hablar de trabajo? Estoy disponible para freelance y abierto a propuestas interesantes.",
+    "contact-freelance": "Disponible para proyectos →",
+    "side-right":     "CREADOR · MULTIDISCIPLINARIO · IA"
+  },
+  en: {
+    "nav-tagline":    "Full Stack Developer",
+    "nav-about":      "About",
+    "nav-skills":     "Stack",
+    "nav-work":       "Work",
+    "nav-exp":        "Exp.",
+    "nav-contact":    "Contact",
+    "hero-eyebrow":   "Creator · Full Stack Developer · AI in progress",
+    "hero-sub":       "Parque Chas · Buenos Aires · Argentina",
+    "hero-cta-1":     "View projects →",
+    "hero-cta-2":     "Contact me",
+    "stat-1":         "Yrs exp.",
+    "stat-2":         "Tech Lead",
+    "stat-3":         "Gov. sys.",
+    "stat-4":         "Studying",
+    "scroll":         "scroll",
+    "about-p1":       'I\'m <strong>Ivan Ibarra</strong>, a Full Stack developer and multidisciplinary <em>creator</em> based in Parque Chas, Buenos Aires. I specialize in <strong>Python and Django</strong>, building large-scale institutional systems for Argentine national government agencies.',
+    "about-p2":       'I currently lead as <strong>Tech Lead</strong> the SIAL&nbsp;/&nbsp;BDU system — complex multi-role approval workflows, data migrations, API integrations, and team mentoring. In parallel I\'m studying <em>Artificial Intelligence</em> to take my stack to the next level.',
+    "about-p3":       'Detail-oriented by nature. Passionate about <strong>anime, 90s video games</strong> and everything that bridges technology with visual culture. I believe the best code also has aesthetics.',
+    "p-location":     "Location",
+    "p-role":         "Current role",
+    "p-role-val":     "Tech Lead / Full Stack",
+    "p-db":           "Database",
+    "p-studying":     "Studying",
+    "p-studying-val": "Artificial Intelligence",
+    "p-method":       "Methodology",
+    "p-freelance":    "Available ✓",
+    "sk-backend":     "Backend & databases",
+    "sk-frontend":    "Frontend & DevOps",
+    "sk-learning":    "Actively learning",
+    "sk-ai":          "Artificial Intelligence",
+    "sk-ml":          "Machine Learning",
+    "sk-arch":        "Software architecture",
+    "sk-lead":        "Technical leadership",
+    "proj1-name":     "SIAL / BDU — Institutional inventory",
+    "proj1-desc":     "Asset management system for Argentine national government agencies",
+    "proj2-name":     "Barbería Íntima — Commercial landing",
+    "proj2-desc":     "Website with visual identity for a Buenos Aires boutique barbershop",
+    "proj3-name":     "Pegasos — Sports club management",
+    "proj3-desc":     "Platform for organizing community basketball and volleyball teams",
+    "exp1-period":    "2022 — PRESENT",
+    "exp1-role":      "Tech Lead · Full Stack Developer",
+    "exp1-company":   "SIAL / BDU System — National Agency",
+    "exp1-desc":      "Technical leadership of the institutional asset inventory system. Multi-role approval workflow design, complex data migrations, API integrations, and team mentoring.",
+    "exp2-role":      "Full Stack Developer",
+    "exp2-company":   "SIAL System — National Agency",
+    "exp2-desc":      "Development of inventory modules, amortization reports, and admin tools using Django, DRF, and PostgreSQL.",
+    "exp3-role":      "IT Systems & Support",
+    "exp3-desc":      "Infrastructure support and incident resolution in a high-availability environment. The foundation that shaped my eye for robust systems and technical detail.",
+    "contact-intro":  "Have a project in mind or want to talk work? I'm available for freelance and open to interesting proposals.",
+    "contact-freelance": "Available for projects →",
+    "side-right":     "CREATOR · MULTIDISCIPLINARY · AI"
+  }
+};
+
+var currentLang = localStorage.getItem('ii-lang') || 'es';
+
+function applyLang(lang){
+  currentLang = lang;
+  localStorage.setItem('ii-lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(strings[lang][key] !== undefined) el.innerHTML = strings[lang][key];
+  });
+  document.getElementById('langBtn').textContent = lang === 'es' ? 'ES | EN' : 'EN | ES';
+}
+
+document.getElementById('langBtn').addEventListener('click', function(){
+  applyLang(currentLang === 'es' ? 'en' : 'es');
+});
+applyLang(currentLang);
+
+/* ── THEME ── */
+var currentTheme = localStorage.getItem('ii-theme') || 'dark';
+
+function applyTheme(theme){
+  currentTheme = theme;
+  localStorage.setItem('ii-theme', theme);
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('icon-sun').style.display  = theme === 'dark'  ? 'block' : 'none';
+  document.getElementById('icon-moon').style.display = theme === 'light' ? 'block' : 'none';
+}
+
+document.getElementById('themeBtn').addEventListener('click', function(){
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
+applyTheme(currentTheme);
+
+/* ── CURSOR ── */
+var c = document.getElementById('cur');
+var r = document.getElementById('curl');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+(function loop(){
+  rx+=(mx-rx)*.15;ry+=(my-ry)*.15;
+  c.style.left=mx+'px';c.style.top=my+'px';
+  r.style.left=rx+'px';r.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+
+/* ── GEO CANVAS ── */
+var canvas = document.getElementById('geo-canvas');
+var heroEl = document.getElementById('hero');
+var ctx    = canvas.getContext('2d');
+function resizeCanvas(){canvas.width=heroEl.offsetWidth;canvas.height=heroEl.offsetHeight;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+
+var t=0;
+function getAlpha(){return document.documentElement.getAttribute('data-theme')==='light'?0.45:1;}
+
+function drawRing(cx,cy,r,segs,rot,color,lw){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||0.5;
+  var step=(Math.PI*2)/segs;
+  for(var i=0;i<segs;i++){var a1=i*step+rot,a2=a1+step*0.55;ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.stroke();}
+  ctx.restore();
+}
+function drawPoly(cx,cy,r,sides,rot,color,lw,fill){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||0.5;
+  if(fill)ctx.fillStyle=fill;
+  ctx.beginPath();
+  for(var i=0;i<=sides;i++){var a=(i/sides)*Math.PI*2+rot,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+  ctx.closePath();if(fill)ctx.fill();ctx.stroke();ctx.restore();
+}
+function drawSpoke(cx,cy,r1,r2,angle,color,lw){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||0.5;
+  ctx.beginPath();ctx.moveTo(cx+Math.cos(angle)*r1,cy+Math.sin(angle)*r1);ctx.lineTo(cx+Math.cos(angle)*r2,cy+Math.sin(angle)*r2);
+  ctx.stroke();ctx.restore();
+}
+
+function animGeo(){
+  t+=0.004;
+  var W=canvas.width,H=canvas.height,cx=W/2,cy=H/2-10;
+  var a=getAlpha();
+  var or='rgba(255,90,10,';
+  var od=document.documentElement.getAttribute('data-theme')==='light'?'rgba(200,70,0,':'rgba(255,90,10,';
+
+  ctx.clearRect(0,0,W,H);
+
+  var g=ctx.createRadialGradient(cx,cy,0,cx,cy,220);
+  g.addColorStop(0,'rgba(255,80,5,'+(0.11*a)+')');
+  g.addColorStop(0.55,'rgba(255,80,5,'+(0.04*a)+')');
+  g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+
+  drawRing(cx,cy,250,14,t*0.28,od+(0.055*a)+')',0.5);
+  drawRing(cx,cy,215,11,-t*0.22,od+(0.065*a)+')',0.5);
+  drawPoly(cx,cy,235,6,t*0.14,od+(0.07*a)+')',0.5,null);
+  drawPoly(cx,cy,205,6,-t*0.11+Math.PI/6,od+(0.05*a)+')',0.5,null);
+  for(var i=0;i<12;i++){var a2=(i/12)*Math.PI*2+t*0.09;drawSpoke(cx,cy,168,240,a2,od+((0.03+0.015*Math.sin(t*2+i))*a)+')',0.5);}
+  drawPoly(cx,cy,168,4,t*0.22+Math.PI/4,od+(0.10*a)+')',0.8,null);
+  drawPoly(cx,cy,154,4,-t*0.18+Math.PI/4,od+(0.07*a)+')',0.5,null);
+  drawPoly(cx,cy,136,3,t*0.17,od+(0.08*a)+')',0.5,null);
+  drawRing(cx,cy,114,8,-t*0.38,od+(0.15*a)+')',0.8);
+  drawRing(cx,cy,92,6,t*0.48,od+(0.12*a)+')',0.6);
+  drawPoly(cx,cy,72,6,t*0.28,od+(0.20*a)+')',1,od+(0.04*a)+')');
+  drawPoly(cx,cy,54,6,-t*0.23+Math.PI/6,od+(0.24*a)+')',1,null);
+
+  var pulse=6+2*Math.sin(t*3);
+  var gc=ctx.createRadialGradient(cx,cy,0,cx,cy,pulse*4);
+  gc.addColorStop(0,'rgba(255,180,80,'+(0.88*a)+')');
+  gc.addColorStop(0.45,'rgba(255,80,10,'+(0.5*a)+')');
+  gc.addColorStop(1,'transparent');
+  ctx.fillStyle=gc;ctx.beginPath();ctx.arc(cx,cy,pulse*4,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,144,64,'+a+')';ctx.beginPath();ctx.arc(cx,cy,pulse*0.5,0,Math.PI*2);ctx.fill();
+
+  [[36,56],[W-36,56],[36,H-24],[W-36,H-24]].forEach(function(m,i){
+    ctx.save();ctx.strokeStyle=od+(0.13*a)+')';ctx.lineWidth=0.8;
+    var s=13,sx=i%2===0?1:-1,sy=i<2?1:-1;
+    ctx.beginPath();ctx.moveTo(m[0],m[1]);ctx.lineTo(m[0]+sx*s,m[1]);ctx.moveTo(m[0],m[1]);ctx.lineTo(m[0],m[1]+sy*s);ctx.stroke();ctx.restore();
+  });
+
+  for(var p=0;p<20;p++){
+    var pa=(p/20)*Math.PI*2+t*(0.07+p*0.003),pr=270+28*Math.sin(t*0.65+p*1.1);
+    var px=cx+Math.cos(pa)*pr,py=cy+Math.sin(pa)*pr;
+    if(px<0||px>W||py<0||py>H)continue;
+    ctx.fillStyle=od+((0.08+0.06*Math.sin(t*2+p))*a)+')';
+    ctx.beginPath();ctx.arc(px,py,p%3===0?1.4:0.7,0,Math.PI*2);ctx.fill();
+  }
+  requestAnimationFrame(animGeo);
+}
+animGeo();
+
+/* ── NAV ── */
+var nav=document.getElementById('mainNav');
+var secs=['about','skills','work','exp','contact'];
+var navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',function(){
+  nav.classList.toggle('scrolled',window.scrollY>40);
+  var cur='';
+  secs.forEach(function(id){var el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-120)cur=id;});
+  navLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+});
+
+/* ── SCROLL REVEAL ── */
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+},{threshold:.08,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+/* ── REDUCED MOTION ── */
+if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+  document.querySelectorAll('.name-first,.name-last').forEach(function(el){el.style.animation='none';el.style.clipPath='none';});
+  document.querySelectorAll('.hero-eyebrow,.hero-role,.hero-sub,.hero-cta,.hero-stats,.hero-divider,.scroll-hint').forEach(function(el){el.style.animation='none';el.style.opacity='1';el.style.width='180px';});
+}
+
+})();
+</script>
+</body>
+</html>
